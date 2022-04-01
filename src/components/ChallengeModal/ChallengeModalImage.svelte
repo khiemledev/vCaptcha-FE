@@ -15,7 +15,7 @@
     <img class="ndtv-image"
         src={$imageData}
         alt={`image-${rowIndex}-${colIndex}`}
-        style="position: relative; top: { -rowIndex * 100}px; left: { -colIndex * 100}px;""
+        style="position: relative; top: { -rowIndex * 100}px; left: { -colIndex * 100}px;"
     />
 </div>
 
@@ -31,8 +31,9 @@
     }
 
     .ndtv-image-container.selected {
-        width: 96px;
-        height: 96px;
-        border: 2px solid pink;
+        width: 94px;
+        height: 94px;
+        border: 3px solid pink;
+        border-radius: 3px;
     }
 </style>
