@@ -1,20 +1,25 @@
 <script lang="ts">
     import ChallengeSolvingModal from "./views/ChallengeModal.svelte";
     import OuterDisplayBox from "./views/OuterDisplayBox.svelte";
-    import { imageData } from './store'
+    import services from "./services";
+    import type PositionModel from '../commons/models/positionModel';
 
     let isShowingChallenge: boolean = false;
+
+    services.getNewImageData();
     
-    fetch("/captcha/demo/get_image")
-        .then(resp => resp.arrayBuffer()).then(data => {
-            var binary = '';
-            var bytes = new Uint8Array(data);
-            var len = bytes.byteLength;
-            for (var i = 0; i < len; i++) {
-                binary += String.fromCharCode( bytes[ i ] );
-            }
-            $imageData = 'data:image/png;base64,' + window.btoa( binary );
-        });
+    document.addEventListener("click", function(event: PointerEvent) {
+        for (let ele of event.composedPath()) {
+            if (ele.id === "ndtv-main-container") return;
+        }
+        isShowingChallenge = false;
+    });
+
+    function showChallengeModal() {
+        isShowingChallenge = true
+    }
+
+    
 
 </script>
 
@@ -25,7 +30,7 @@
     </div>
     <div style="width: auto;">
         <div id="ndtv-container">
-            <OuterDisplayBox on:showChallenge={() => isShowingChallenge = true}/>
+            <OuterDisplayBox on:showChallenge={showChallengeModal}/>
             {#if isShowingChallenge}
             <ChallengeSolvingModal/>
             {/if}

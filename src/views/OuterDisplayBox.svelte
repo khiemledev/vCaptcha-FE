@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-    import CheckBoxStatus from "../commons/enums/checkBoxStatus.ts"
+    import ChallengeStatus from "../commons/enums/challengeStatus.ts"
+    import LoadingAnimation from "../components/commons/LoadingAnimation.svelte"
+	import { fade } from 'svelte/transition';
+    import { imageData, status, challengeAnchor } from '../store';
 
 	const dispatch = createEventDispatcher();
-    let status: CheckBoxStatus = CheckBoxStatus.Empty;
 
     function handleShowChallenge() {
         dispatch("showChallenge");
@@ -11,14 +13,20 @@
 </script>
 
 <div id="ndtv-front-container">
-    <span id="ndtv-front-checkbox" class="mx-2">
-        {#if status === CheckBoxStatus.Empty}
-        <div id="ndtv-front-checkbox-empty" on:click={handleShowChallenge}/>
+    <span id="ndtv-front-checkbox" class="mx-2" bind:offsetHeight={$challengeAnchor.top} bind:offsetWidth={$challengeAnchor.left}>
+        {#if $status === ChallengeStatus.Empty}
+        <div id="ndtv-front-checkbox-empty" on:click|stopPropagation={handleShowChallenge} transition:fade/>
         {/if}
-        {#if status === CheckBoxStatus.Succeed}
+        {#if $status === ChallengeStatus.Loading}
+        <div class="mx-2">
+            <LoadingAnimation/>
+        </div>
+        {/if}
+        {#if $status === ChallengeStatus.Succeed}
         <div
             id="ndtv-front-checkbox-succeed"
-            style="display: none; margin-left: 24px;"
+            style="margin-left: 24px;"
+            transition:fade
         >
             <svg fill="pink" width="32" height="32" viewBox="0 0 16 16">
                 <path
@@ -46,6 +54,7 @@
         width: 5rem;
         height: 2rem;
         margin: 0px;
+        display: flex;
     }
 
     #ndtv-front-checkbox-empty {

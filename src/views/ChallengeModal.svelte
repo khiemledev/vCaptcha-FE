@@ -1,13 +1,19 @@
 <script lang="ts">
-import ChallengeModalContent from "../components/ChallengeModal/ChallengeModalContent.svelte";
-
+	import { fade } from 'svelte/transition';
+    import ChallengeStatus from "../commons/enums/challengeStatus.ts"
+    import services from "../services";
+    import type PositionModel from '../commons/models/positionModel';
+    import ChallengeModalContent from "../components/ChallengeModal/ChallengeModalContent.svelte";
+    import {status, challengeAnchor} from "../store"
+    
 
     function handleSubmitVerify() {
-        console.log("verifying")
+        $status = ChallengeStatus.Succeed;
     }
 </script>
 
-<div id="ndtv-main-container">
+<div id="ndtv-main-container" transition:fade 
+    style="position: relative; top: { $challengeAnchor.top - 78}px; left: { $challengeAnchor.left }px;">
     <div id="ndtv-header" class="py-2">
         <p class="my-0" style="font-size: 1.25rem;">
             Nhận diện Tiếng Việt
@@ -15,7 +21,8 @@ import ChallengeModalContent from "../components/ChallengeModal/ChallengeModalCo
     </div>
     <ChallengeModalContent/>
     <div id="ndtv-footer" class="py-2">
-        <div id="ndtv-footer-reload-button">
+        <!-- RELOAD BUTTON -->
+        <div id="ndtv-footer-reload-button" on:click={services.getNewImageData}>
             <svg
                 width="32"
                 height="32"
@@ -32,7 +39,7 @@ import ChallengeModalContent from "../components/ChallengeModal/ChallengeModalCo
                 />
             </svg>
         </div>
-        <button id="ndtv-footer-submit-button">Kiểm tra</button>
+        <button id="ndtv-footer-submit-button" on:click={handleSubmitVerify}>Kiểm tra</button>
     </div>
 </div>
 
@@ -73,6 +80,10 @@ import ChallengeModalContent from "../components/ChallengeModal/ChallengeModalCo
 
     #ndtv-footer-reload-button {
         float: left;
+    }
+
+    #ndtv-footer-reload-button:hover{
+        filter: drop-shadow(1px 1px 2px #abc);
     }
 
     #ndtv-footer-submit-button {
