@@ -2,11 +2,11 @@
 
     import ChallengeModalImagesRow from "./ChallengeModalImagesRow.svelte";
 
-    let rowCount = 3, colCount = 3;
+    let rowCount = 4, colCount = 4;
 
 </script>
 
-<div id="ndtv-content-container">
+<div id="vcaptcha-content-container">
     <div>
         {#each {length: rowCount} as _, i}
         <ChallengeModalImagesRow rowIndex={i} {colCount}/>
@@ -15,7 +15,7 @@
 </div>
 
 <style>
-    #ndtv-content-container {
+    #vcaptcha-content-container {
         width: 100%;
         display: flex;
         justify-content: center;
