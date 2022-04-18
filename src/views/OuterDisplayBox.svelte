@@ -14,7 +14,7 @@
 
 <div id="vcaptcha-front-container">
     <span id="vcaptcha-front-checkbox" class="mx-2" bind:offsetHeight={$challengeAnchor.top} bind:offsetWidth={$challengeAnchor.left}>
-        {#if $status === ChallengeStatus.Empty}
+        {#if $status === ChallengeStatus.Loaded || $status === ChallengeStatus.LastChallenge}
         <div id="vcaptcha-front-checkbox-empty" on:click|stopPropagation={handleShowChallenge} transition:fade/>
         {/if}
         {#if $status === ChallengeStatus.Loading}

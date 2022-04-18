@@ -11,7 +11,7 @@
 	const dispatch = createEventDispatcher();
 
     function handleSubmitVerify() {
-        $status = ChallengeStatus.Succeed;
+        services.postClientChallengeAnswer();
         dispatch("closeChallenge");
     }
 </script>
