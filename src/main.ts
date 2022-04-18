@@ -1,18 +1,17 @@
 //@ts-nocheck
 import App from './App.svelte';
 
+const defaultId = "vcaptcha-body"
+
 window.vCaptcha = {
-    targetId: "vcaptcha-body",
-    render: function (id: string) {
-        if (this.initialLoadId) {
-            clearTimeout(window.vCaptcha.initialLoadId);
-            this.initialLoadId = false;
-        }
-        this.targetId = id;
+    isRendered: false,
+    targetId: defaultId,
+    render: function (id?: string) {
+        this.renderred = true;
+        if (id) this.targetId = id;
         this.app = new App({
             target: document.getElementById(this.targetId),
-            props: {
-            }
+            props: {}
         });
     }
 }
@@ -25,8 +24,9 @@ window.vCaptcha = {
 
 window.vCaptcha.app = null;
 
-window.vCaptcha.initialLoadId = setTimeout(function () {
-    window.vCaptcha.render("vcaptcha-body")
-}, 500)
+window.addEventListener('load', function() {
+    if (!window.vCaptcha.isRendered)
+        window.vCaptcha.render();
+})
 
 export default window.vCaptcha.app;

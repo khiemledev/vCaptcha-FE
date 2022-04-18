@@ -22,3 +22,4 @@ npm run dev
 npm run build
 ```
 
+Read DOCUMENTATION.md for vcaptcha usage
