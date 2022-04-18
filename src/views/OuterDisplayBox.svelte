@@ -12,10 +12,10 @@
     }
 </script>
 
-<div id="ndtv-front-container">
-    <span id="ndtv-front-checkbox" class="mx-2" bind:offsetHeight={$challengeAnchor.top} bind:offsetWidth={$challengeAnchor.left}>
+<div id="vcaptcha-front-container">
+    <span id="vcaptcha-front-checkbox" class="mx-2" bind:offsetHeight={$challengeAnchor.top} bind:offsetWidth={$challengeAnchor.left}>
         {#if $status === ChallengeStatus.Empty}
-        <div id="ndtv-front-checkbox-empty" on:click|stopPropagation={handleShowChallenge} transition:fade/>
+        <div id="vcaptcha-front-checkbox-empty" on:click|stopPropagation={handleShowChallenge} transition:fade/>
         {/if}
         {#if $status === ChallengeStatus.Loading}
         <div class="mx-2">
@@ -24,7 +24,7 @@
         {/if}
         {#if $status === ChallengeStatus.Succeed}
         <div
-            id="ndtv-front-checkbox-succeed"
+            id="vcaptcha-front-checkbox-succeed"
             style="margin-left: 24px;"
             transition:fade
         >
@@ -41,7 +41,7 @@
 
 <style>
 
-    #ndtv-front-container {
+    #vcaptcha-front-container {
         width: 100%;
         height: 100%;
         display: flex;
@@ -50,14 +50,14 @@
         background-color: lightcyan;
     }
 
-    #ndtv-front-checkbox {
+    #vcaptcha-front-checkbox {
         width: 5rem;
         height: 2rem;
         margin: 0px;
         display: flex;
     }
 
-    #ndtv-front-checkbox-empty {
+    #vcaptcha-front-checkbox-empty {
         width: 2rem;
         height: 2rem;
         background-color: white;

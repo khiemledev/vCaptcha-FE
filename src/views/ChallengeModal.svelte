@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
     import ChallengeStatus from "../commons/enums/challengeStatus.ts"
     import services from "../services";
@@ -7,27 +8,30 @@
     import {status, challengeAnchor} from "../store"
     
 
+	const dispatch = createEventDispatcher();
+
     function handleSubmitVerify() {
         $status = ChallengeStatus.Succeed;
+        dispatch("closeChallenge");
     }
 </script>
 
-<div id="ndtv-main-container" transition:fade 
+<div id="vcaptcha-main-container" transition:fade 
     style="position: relative; top: { $challengeAnchor.top - 78}px; left: { $challengeAnchor.left }px;">
-    <div id="ndtv-header" class="py-2">
+    <div id="vcaptcha-header" class="py-2">
         <p class="my-0" style="font-size: 1.25rem;">
             Nhận diện Tiếng Việt
         </p>
     </div>
     <ChallengeModalContent/>
-    <div id="ndtv-footer" class="py-2">
+    <div id="vcaptcha-footer" class="py-2 px-2">
         <!-- RELOAD BUTTON -->
-        <div id="ndtv-footer-reload-button" on:click={services.getNewImageData}>
+        <div id="vcaptcha-footer-reload-button" on:click={services.getNewImageData}>
             <svg
                 width="32"
                 height="32"
                 fill="pink"
-                class="bi bi-arrow-repeat"
+                class="vcaptcha-button"
                 viewBox="0 0 16 16"
             >
                 <path
@@ -39,12 +43,12 @@
                 />
             </svg>
         </div>
-        <button id="ndtv-footer-submit-button" on:click={handleSubmitVerify}>Kiểm tra</button>
+        <button id="vcaptcha-footer-submit-button" on:click={handleSubmitVerify} class="mx-2 vcaptcha-button">Kiểm tra</button>
     </div>
 </div>
 
 <style>
-    #ndtv-main-container {
+    #vcaptcha-main-container {
         width: 50vw;
         min-width: 350px;
         max-width: 428px;
@@ -54,7 +58,7 @@
         border-radius: 5px;
     }
 
-    #ndtv-header {
+    #vcaptcha-header {
         width: 100%;
         display: flex;
         justify-content: center;
@@ -63,30 +67,32 @@
 
     /* --- main header section */
 
-    #ndtv-header {
+    #vcaptcha-header {
         background-color: plum;
     }
 
     /* --- footer section */
 
-    #ndtv-footer {
+    #vcaptcha-footer {
         width: 95%;
-        padding-left: 16px;
-        padding-right: 16px;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
 
-    #ndtv-footer-reload-button {
+    #vcaptcha-footer-reload-button {
         float: left;
     }
 
-    #ndtv-footer-reload-button:hover{
-        filter: drop-shadow(1px 1px 2px #abc);
+    #vcaptcha-footer-reload-button svg:hover{
+        fill: #6ac;
+    }
+    
+    #vcaptcha-footer-reload-button svg:active {
+        fill: palevioletred;
     }
 
-    #ndtv-footer-submit-button {
+    #vcaptcha-footer-submit-button {
         height: 2.5rem;
         width: 32%;
         background-color: palevioletred;
@@ -95,10 +101,16 @@
         border-radius: 5px;
         float: right;
     }
-
-    #ndtv-footer-submit-button:active {
-        border: 2px solid darkturquoise;
-        border-radius: 5px;
+    #vcaptcha-footer-submit-button:hover {
+        background-color: #6ac;
+        border: 0px;
     }
 
+    #vcaptcha-footer-submit-button:active {
+        background-color: pink;
+    }
+
+    .vcaptcha-button {
+        transition: background-color 0.3s, fill 0.3s;
+    }
 </style>

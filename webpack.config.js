@@ -6,7 +6,7 @@ const mode = process.env.NODE_ENV || 'development';
 const prod = mode === 'production';
 
 
-module.exports = function({ backend = "https://aiclub.uit.edu.vn" }) {
+module.exports = function() {
     return {
         entry: {
             'build/bundle': ['./src/main.ts']
