@@ -10,8 +10,16 @@
 
 	const dispatch = createEventDispatcher();
 
+    function handleReload() {
+        services.postCreateCaptcha().then(() => services.getNewImageData());
+    }
+
+    function handleNextChallenge() {
+        services.getNewImageData();
+    }
+
     function handleSubmitVerify() {
-        $status = ChallengeStatus.Succeed;
+        services.postClientChallengeAnswer();
         dispatch("closeChallenge");
     }
 </script>
@@ -26,7 +34,7 @@
     <ChallengeModalContent/>
     <div id="vcaptcha-footer" class="py-2 px-2">
         <!-- RELOAD BUTTON -->
-        <div id="vcaptcha-footer-reload-button" on:click={services.getNewImageData}>
+        <div id="vcaptcha-footer-reload-button" on:click={handleReload}>
             <svg
                 width="32"
                 height="32"
@@ -43,15 +51,20 @@
                 />
             </svg>
         </div>
+        {#if $status != ChallengeStatus.LastChallenge}
+        <button id="vcaptcha-footer-submit-button" on:click={handleNextChallenge} class="mx-2 vcaptcha-button">Tiếp tục</button>
+        {/if}
+        {#if $status == ChallengeStatus.LastChallenge}
         <button id="vcaptcha-footer-submit-button" on:click={handleSubmitVerify} class="mx-2 vcaptcha-button">Kiểm tra</button>
+        {/if}
     </div>
 </div>
 
 <style>
     #vcaptcha-main-container {
         width: 50vw;
-        min-width: 350px;
-        max-width: 428px;
+        min-width: 390px;
+        max-width: 450px;
         background-color: white;
         position: absolute;
         border: 1px solid pink;

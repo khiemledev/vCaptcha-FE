@@ -4,17 +4,21 @@
     import LoadingAnimation from "../components/commons/LoadingAnimation.svelte"
 	import { fade } from 'svelte/transition';
     import { imageData, status, challengeAnchor } from '../store';
+    import services from '../services';
 
 	const dispatch = createEventDispatcher();
 
     function handleShowChallenge() {
+        if ($status == ChallengeStatus.Failed) {
+            services.postCreateCaptcha().then(() => services.getNewImageData());
+        }
         dispatch("showChallenge");
     }
 </script>
 
 <div id="vcaptcha-front-container">
     <span id="vcaptcha-front-checkbox" class="mx-2" bind:offsetHeight={$challengeAnchor.top} bind:offsetWidth={$challengeAnchor.left}>
-        {#if $status === ChallengeStatus.Empty}
+        {#if [ChallengeStatus.Loaded, ChallengeStatus.LastChallenge, ChallengeStatus.Failed].includes($status)}
         <div id="vcaptcha-front-checkbox-empty" on:click|stopPropagation={handleShowChallenge} transition:fade/>
         {/if}
         {#if $status === ChallengeStatus.Loading}

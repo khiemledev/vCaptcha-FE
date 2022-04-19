@@ -1,20 +1,24 @@
 <script lang="ts">
-    import { imageData, imagesSelectStatus } from '../../store';
+    import { imageData, imageCount, imagesSelectStatus } from '../../store';
 
     export let rowIndex = 0;
     export let rowCount = 4;
     export let colIndex = 0;
     export let colCount = 4;
 
-    let imageWidth = 380, imageHeight = 380;
-
+    let imageWidth = 380, imageHeight = 380, imageName = "image1";
+    
+    imageCount.subscribe((value) => {
+        if (value == 0) imageName = "image1";
+        imageName = `image${value}`;
+    })
     $: imgIndex = rowIndex * colCount + colIndex;
-    $: isSelected = $imagesSelectStatus[imgIndex];
+    $: isSelected = $imagesSelectStatus[imageName] ? $imagesSelectStatus[imageName][imgIndex] : false;
     $: selectedBorder = isSelected ? 6 : 0;
 
     function handleClick() {
         isSelected = !isSelected;
-        $imagesSelectStatus[imgIndex] = isSelected;
+        $imagesSelectStatus[imageName][imgIndex] = isSelected;
     }
 
 

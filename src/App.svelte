@@ -4,8 +4,8 @@
     import services from "./services";
 
     let isShowingChallenge: boolean = false;
-
-    services.getNewImageData();
+    
+    services.postCreateCaptcha().then(() => services.getNewImageData());
     
     document.addEventListener("click", function(event: PointerEvent) {
         for (let ele of event.composedPath()) {
