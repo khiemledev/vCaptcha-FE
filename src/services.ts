@@ -1,4 +1,4 @@
-import { imageData, imagesSelectStatus, status, sessionId, imageCount,} from "./store";
+import { imageData, imagesSelectStatus, imageCount, sessionId, status } from './store';
 import ChallengeStatus from "./commons/enums/challengeStatus"
 
 let localSelectStatus = {image1: [], image2: [],},
@@ -15,7 +15,15 @@ function postJSON(path: string, jsonData: any) {
     }).then((resp) => resp.json())
 }
 
+function resetImageSelectStatus(){
+    imagesSelectStatus.set({
+        image1: [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+        image2: [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+    })
+}
+
 imageCount.subscribe((value) => {
+    console.log(value)
     localImageCount = value
 })
 imagesSelectStatus.subscribe((value) => {
@@ -31,6 +39,9 @@ sessionId.subscribe((value) => {
 class Services {
     postCreateCaptcha = async () => {
         status.set(ChallengeStatus.Empty);
+        resetImageSelectStatus();
+        imageCount.set(0);
+        sessionId.set("");
         const resp = await postJSON("/captcha/demo/create_captcha", {
             secret: "captcha_secret",
             hostname: "recaptcha.com",
@@ -45,11 +56,8 @@ class Services {
 
     getNewImageData = async () => {
         status.set(ChallengeStatus.Loading);
-        imageCount.set(localImageCount++);
-        imagesSelectStatus.set({
-            image1: [false, false, false, false, false, false, false, false, false, false, false, false],
-            image2: [false, false, false, false, false, false, false, false, false, false, false, false],
-        })
+        imageCount.set(++localImageCount);
+        resetImageSelectStatus();
         return fetch(`/captcha/demo/get_captcha_image?session_id=${localSessionId}&image=${localImageCount}`)
           .then((resp) => resp.arrayBuffer())
           .then((data) => {
@@ -60,7 +68,12 @@ class Services {
               binary += String.fromCharCode(bytes[i]);
             }
             imageData.set("data:image/png;base64," + window.btoa(binary));
-            window.setTimeout(() => status.set(ChallengeStatus.Loaded), 300);
+            window.setTimeout(() => {
+                status.set(ChallengeStatus.Loaded)
+                if (localImageCount == 2){
+                    status.set(ChallengeStatus.LastChallenge);
+                }
+            }, 300);
           });
     }
 
@@ -71,6 +84,11 @@ class Services {
           session_id: localSessionId,
           client_response: localSelectStatus,
         });
+        if (resp.success) {
+            status.set(ChallengeStatus.Succeed);
+            return;
+        }
+        status.set(ChallengeStatus.Failed);
     }
 }
 
