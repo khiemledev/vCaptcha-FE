@@ -85,6 +85,7 @@ class Services {
           client_response: localSelectStatus,
         });
         if (resp.success) {
+            document.cookie = `vcaptcha_session_id=${localSessionId}`;
             status.set(ChallengeStatus.Succeed);
             return;
         }
