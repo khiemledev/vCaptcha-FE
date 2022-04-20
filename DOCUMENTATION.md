@@ -25,3 +25,7 @@ You can also explicictly tell vCaptcha to render element onto specific element b
 </script>
 ````
 ***Caveat: calling vCaptcha.render in async script may not work.***
+
+## 3. Checking vCaptcha session id
+
+Whenever user successfully answer challenge, the `vcaptcha_session_id` will be automatically added to their `cookie` and send to your backend along with their request. Use this `vcaptcha_session_id` to send to vCaptcha backend to verify whether a user have answered correctly or not.
