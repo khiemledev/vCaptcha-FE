@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-    import ChallengeStatus from "../commons/enums/challengeStatus.ts"
+    import ChallengeStatus from "../commons/enums/challengeStatus"
     import LoadingAnimation from "../components/commons/LoadingAnimation.svelte"
 	import { fade } from 'svelte/transition';
     import { imageData, status, challengeAnchor } from '../store';
@@ -18,15 +18,11 @@
 
 <div id="vcaptcha-front-container">
     <span id="vcaptcha-front-checkbox" class="mx-2" bind:offsetHeight={$challengeAnchor.top} bind:offsetWidth={$challengeAnchor.left}>
-        {#if [ChallengeStatus.Loaded, ChallengeStatus.LastChallenge, ChallengeStatus.Failed].includes($status)}
-        <div id="vcaptcha-front-checkbox-empty" on:click|stopPropagation={handleShowChallenge} transition:fade/>
-        {/if}
         {#if $status === ChallengeStatus.Loading}
         <div class="mx-2">
             <LoadingAnimation/>
         </div>
-        {/if}
-        {#if $status === ChallengeStatus.Succeed}
+        {:else if $status === ChallengeStatus.Succeed}
         <div
             id="vcaptcha-front-checkbox-succeed"
             style="margin-left: 24px;"
@@ -38,6 +34,8 @@
                 />
             </svg>
         </div>
+        {:else}
+        <div id="vcaptcha-front-checkbox-empty" on:click|stopPropagation={handleShowChallenge} transition:fade/>
         {/if}
     </span>
     <span>Tôi không phải người máy</span>

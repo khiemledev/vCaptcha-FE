@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { imageData, imageCount, imagesSelectStatus } from '../../store';
+    import { prevent_default } from 'svelte/internal';
+import { imageData, imageCount, imagesSelectStatus } from '../../store';
 
     export let rowIndex = 0;
     export let rowCount = 4;
@@ -34,6 +35,7 @@
     {/if}
     <img class="vcaptcha-image"
         src="{$imageData}"
+        draggable="false"
         alt={`image-${rowIndex}-${colIndex}`}
         style="position: relative; top: { 150 - rowIndex * 100}%; left: { -colIndex * 100}%;"
     />
@@ -45,7 +47,12 @@
         align-items: center;
         margin: 1px;
         overflow: hidden;
-        /* transition: width 0.5s, height 0.5s, border 0.5s; */
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
     }
 
     .vcaptcha-check-circle {

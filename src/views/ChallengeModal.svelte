@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
-    import ChallengeStatus from "../commons/enums/challengeStatus.ts"
+    import ChallengeStatus from "../commons/enums/challengeStatus"
     import services from "../services";
     import ChallengeModalContent from "../components/ChallengeModal/ChallengeModalContent.svelte";
     import {status, challengeAnchor, imagesSelectStatus, imageCount} from "../store"
@@ -47,7 +47,7 @@
             </p>
         </div>
     </div>
-    <ChallengeModalContent/>
+    <ChallengeModalContent isHidden={$status === ChallengeStatus.Loading}/>
     <div id="vcaptcha-footer" class="py-2 px-2">
         <!-- RELOAD BUTTON -->
         <div id="vcaptcha-footer-reload-button" on:click={handleReload}>
