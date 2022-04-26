@@ -35,7 +35,7 @@
     <img class="vcaptcha-image"
         src="{$imageData}"
         alt={`image-${rowIndex}-${colIndex}`}
-        style="position: relative; top: { -rowIndex * 100}%; left: { -colIndex * 100 - (isSelected ? 0 : 0)}%;"
+        style="position: relative; top: { 150 - rowIndex * 100}%; left: { -colIndex * 100}%;"
     />
 </div>
 
@@ -58,5 +58,9 @@
         height: 89px;
         border: 3px solid plum;
         border-radius: 3px;
+    }
+    .vcaptcha-image-container.selected img {
+        width: 356px;
+        height: auto;
     }
 </style>

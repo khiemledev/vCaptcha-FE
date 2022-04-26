@@ -10,7 +10,7 @@
 
     function handleShowChallenge() {
         if ($status == ChallengeStatus.Failed) {
-            services.postCreateCaptcha().then(() => services.getNewImageData());
+            services.postCreateCaptcha().then(() => services.getNextImageData());
         }
         dispatch("showChallenge");
     }

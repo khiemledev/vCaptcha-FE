@@ -15,6 +15,32 @@ function postJSON(path: string, jsonData: any) {
     }).then((resp) => resp.json())
 }
 
+function fetchImageData(path, session_id: string, image: number, method: string = "GET",){
+    let f;
+    if (method !== "GET") {
+        f = fetch(path, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                session_id, image
+            })})
+    } else {
+        f = fetch(`${path}?session_id=${session_id}&image=${image}`);
+    }
+    return f.then((resp) => resp.arrayBuffer())
+    .then((data) => {
+      var binary = "";
+      var bytes = new Uint8Array(data);
+      var len = bytes.byteLength;
+      for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return "data:image/png;base64," + window.btoa(binary);
+    })
+}
+
 function resetImageSelectStatus(){
     imagesSelectStatus.set({
         image1: [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
@@ -33,6 +59,10 @@ imagesSelectStatus.subscribe((value) => {
     value[localImageName].forEach((val, ind) =>  val && localSelectStatus[localImageName].push(ind));
 })
 sessionId.subscribe((value) => {
+    //@ts-ignore
+    if(window.vCaptcha && value)
+    //@ts-ignore
+        window.vCaptcha.sessionId = value;
     localSessionId = value;
 });
 
@@ -53,28 +83,31 @@ class Services {
         status.set(ChallengeStatus.Failed);
         return;
     }
+    
+    getRenewedImageData = async () => {
+        status.set(ChallengeStatus.Loading);
+        const data = await fetchImageData(`/captcha/demo/renew_captcha`, localSessionId, localImageCount, "POST");
+        imageData.set(data);
+        window.setTimeout(() => {
+            status.set(ChallengeStatus.Loaded)
+            if (localImageCount == 2){
+                status.set(ChallengeStatus.LastChallenge);
+            }
+        }, 300);
+    }
 
-    getNewImageData = async () => {
+    getNextImageData = async () => {
         status.set(ChallengeStatus.Loading);
         imageCount.set(++localImageCount);
         resetImageSelectStatus();
-        return fetch(`/captcha/demo/get_captcha_image?session_id=${localSessionId}&image=${localImageCount}`)
-          .then((resp) => resp.arrayBuffer())
-          .then((data) => {
-            var binary = "";
-            var bytes = new Uint8Array(data);
-            var len = bytes.byteLength;
-            for (var i = 0; i < len; i++) {
-              binary += String.fromCharCode(bytes[i]);
+        const data = await fetchImageData(`/captcha/demo/get_captcha_image`, localSessionId, localImageCount);
+        imageData.set(data);
+        window.setTimeout(() => {
+            status.set(ChallengeStatus.Loaded)
+            if (localImageCount == 2){
+                status.set(ChallengeStatus.LastChallenge);
             }
-            imageData.set("data:image/png;base64," + window.btoa(binary));
-            window.setTimeout(() => {
-                status.set(ChallengeStatus.Loaded)
-                if (localImageCount == 2){
-                    status.set(ChallengeStatus.LastChallenge);
-                }
-            }, 300);
-          });
+        }, 300);
     }
 
     postClientChallengeAnswer = async () => {
