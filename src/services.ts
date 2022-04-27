@@ -56,7 +56,7 @@ imagesSelectStatus.subscribe((value) => {
     if (localImageCount == 0) return;
     const localImageName = `image${localImageCount}`;
     localSelectStatus[localImageName] = [];
-    value[localImageName].forEach((val, ind) =>  val && localSelectStatus[localImageName].push(ind));
+    value[localImageName].forEach((val, ind) =>  val && localSelectStatus[localImageName].push(ind + 1));
 })
 sessionId.subscribe((value) => {
     //@ts-ignore
