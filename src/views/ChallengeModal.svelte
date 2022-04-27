@@ -1,21 +1,32 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
-    import ChallengeStatus from "../commons/enums/challengeStatus.ts"
+    import ChallengeStatus from "../commons/enums/challengeStatus"
     import services from "../services";
-    import type PositionModel from '../commons/models/positionModel';
     import ChallengeModalContent from "../components/ChallengeModal/ChallengeModalContent.svelte";
-    import {status, challengeAnchor} from "../store"
+    import {status, challengeAnchor, imagesSelectStatus, imageCount} from "../store"
     
 
 	const dispatch = createEventDispatcher();
+    let imageName = "image1";
+    
+    imageCount.subscribe((value) => {
+        if (value == 0) imageName = "image1";
+        imageName = `image${value}`;
+    })
+
+    $: isSelectionEmpty = $imagesSelectStatus[imageName] ? $imagesSelectStatus[imageName].every((a) => !a) : true;
 
     function handleReload() {
-        services.postCreateCaptcha().then(() => services.getNewImageData());
+        services.postCreateCaptcha().then(() => services.getNextImageData());
     }
 
     function handleNextChallenge() {
-        services.getNewImageData();
+        if (isSelectionEmpty){
+            services.getRenewedImageData();
+            return;
+        }
+        services.getNextImageData();
     }
 
     function handleSubmitVerify() {
@@ -27,11 +38,16 @@
 <div id="vcaptcha-main-container" transition:fade 
     style="position: relative; top: { $challengeAnchor.top - 78}px; left: { $challengeAnchor.left }px;">
     <div id="vcaptcha-header" class="py-2">
-        <p class="my-0" style="font-size: 1.25rem;">
-            Nhận diện Tiếng Việt
-        </p>
+        <div class="px-2">
+            <p class="my-0" style="font-size: 1.25rem; font-weight: bold">
+                Chọn các ô có chứa tiếng Việt
+            </p>
+            <p class="my-0" style="font-size: 1.1rem;">
+                Nếu không có, hãy nhấn nút "Bỏ qua"
+            </p>
+        </div>
     </div>
-    <ChallengeModalContent/>
+    <ChallengeModalContent isHidden={$status === ChallengeStatus.Loading}/>
     <div id="vcaptcha-footer" class="py-2 px-2">
         <!-- RELOAD BUTTON -->
         <div id="vcaptcha-footer-reload-button" on:click={handleReload}>
@@ -39,7 +55,6 @@
                 width="32"
                 height="32"
                 fill="pink"
-                class="vcaptcha-button"
                 viewBox="0 0 16 16"
             >
                 <path
@@ -51,10 +66,11 @@
                 />
             </svg>
         </div>
-        {#if $status != ChallengeStatus.LastChallenge}
-        <button id="vcaptcha-footer-submit-button" on:click={handleNextChallenge} class="mx-2 vcaptcha-button">Tiếp tục</button>
-        {/if}
-        {#if $status == ChallengeStatus.LastChallenge}
+        {#if isSelectionEmpty}
+        <button on:click={handleNextChallenge} class="mx-2 vcaptcha-button">Bỏ qua</button>
+        {:else if $status != ChallengeStatus.LastChallenge}
+        <button on:click={handleNextChallenge} class="mx-2 vcaptcha-button">Tiếp tục</button>
+        {:else}
         <button id="vcaptcha-footer-submit-button" on:click={handleSubmitVerify} class="mx-2 vcaptcha-button">Kiểm tra</button>
         {/if}
     </div>
@@ -73,8 +89,6 @@
 
     #vcaptcha-header {
         width: 100%;
-        display: flex;
-        justify-content: center;
         align-items: center;
     }
 
@@ -105,7 +119,7 @@
         fill: palevioletred;
     }
 
-    #vcaptcha-footer-submit-button {
+    .vcaptcha-button {
         height: 2.5rem;
         width: 32%;
         background-color: palevioletred;
@@ -114,16 +128,17 @@
         border-radius: 5px;
         float: right;
     }
-    #vcaptcha-footer-submit-button:hover {
+    .vcaptcha-button:hover {
         background-color: #6ac;
         border: 0px;
     }
 
-    #vcaptcha-footer-submit-button:active {
+    .vcaptcha-button:active {
         background-color: pink;
     }
 
     .vcaptcha-button {
+        font-size: 1.1rem;
         transition: background-color 0.3s, fill 0.3s;
     }
 </style>

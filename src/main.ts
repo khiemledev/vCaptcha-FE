@@ -4,6 +4,7 @@ import App from './App.svelte';
 const defaultId = "vcaptcha-body"
 
 window.vCaptcha = {
+    sessionId: "",
     isRendered: false,
     targetId: defaultId,
     render: function (id?: string) {

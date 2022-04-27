@@ -5,7 +5,7 @@
 
     let isShowingChallenge: boolean = false;
     
-    services.postCreateCaptcha().then(() => services.getNewImageData());
+    services.postCreateCaptcha().then(() => services.getNextImageData());
     
     document.addEventListener("click", function(event: PointerEvent) {
         for (let ele of event.composedPath()) {
