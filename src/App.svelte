@@ -2,6 +2,7 @@
     import ChallengeSolvingModal from "./views/ChallengeModal.svelte";
     import OuterDisplayBox from "./views/OuterDisplayBox.svelte";
     import services from "./services";
+    import {warningMessage} from "./store"
 
     let isShowingChallenge: boolean = false;
     
@@ -21,6 +22,9 @@
 
 <div style="width: auto;">
     <div id="vcaptcha-container">
+        {#if $warningMessage}
+        <span id="vcaptcha-message">{$warningMessage}</span>
+        {/if}
         <OuterDisplayBox on:showChallenge={showChallengeModal}/>
         {#if isShowingChallenge}
         <ChallengeSolvingModal on:closeChallenge={() => isShowingChallenge = false}/>
@@ -29,6 +33,12 @@
 </div>
 
 <style>
+    #vcaptcha-message {
+        color: orangered;
+        float: left;
+        position: absolute;
+        font-size: 0.85rem;
+    }
     #vcaptcha-container {
         font-family: Arial !important;
         color: white;

@@ -1,4 +1,4 @@
-import { imageData, imagesSelectStatus, imageCount, sessionId, status } from './store';
+import { imageData, imagesSelectStatus, imageCount, sessionId, status, warningMessage } from './store';
 import ChallengeStatus from "./commons/enums/challengeStatus"
 
 let localSelectStatus = {image1: [], image2: [],},
@@ -120,9 +120,11 @@ class Services {
         if (resp.success) {
             document.cookie = `vcaptcha_session_id=${localSessionId}`;
             status.set(ChallengeStatus.Succeed);
+            warningMessage.set("");
             return;
         }
         status.set(ChallengeStatus.Failed);
+        warningMessage.set("Không thể xác thực, hãy thử lại");
     }
 }
 
